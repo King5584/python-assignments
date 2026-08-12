@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع تكاليف معالجة الصور</title>
+    <!-- ربط ملف التنسيقات الخارجي -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- زر فتح/إغلاق القائمة الجانبية -->
+    <button id="menuToggleBtn" class="menu-toggle-btn">☰</button>
+
+    <!-- القائمة الجانبية -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <svg viewBox="0 0 24 24">
+                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+            </svg>
+            مقرر معالجة صور
+        </div>
+        <ul id="list" class="assignments-list"></ul>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+
+        <!-- واجهة الترحيب الفردية -->
+        <div id="welcome-screen" class="welcome-screen">
+            <svg viewBox="0 0 24 24">
+                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+            </svg>
+            <h1>موقع تكاليف معالجة الصور</h1>
+                    <p>المهندس: سعيد جميل سعيد احمد </p>
+            <p>Abo_Joud*أبو جود</p>
+            <!--
+            <p>أبو جود</p>
+            -->
+            <p style="color: #94a3b8; font-size: 0.95rem;">اضغط على زر القائمة (☰) في الأعلى لاختيار المحاضرة</p>
+        </div>
+
+        <!-- بطاقة عرض المحاضرة والتكاليف -->
+        <div class="content-card" id="content-card">
+            <h2 id="main-title">اختر من القائمة</h2>
+
+            <div class="tabs">
+                <button id="btn-lecture" class="tab-btn active">تنفيذ المحاضرة</button>
+                <button id="btn-assignment" class="tab-btn">التكليف المطلوب</button>
+                <button id="btn-lab" class="tab-btn lab-btn">🧪 المختبر التفاعلي</button>
+            </div>
+
+            <!-- عرض النصوص والأكواد الرسمية -->
+            <div id="text-container" class="content-body">
+                <h3 id="content-subtitle" style="color: #38bdf8; margin-bottom: 10px; font-size: 1.2rem;"></h3>
+                <p id="content-desc"></p>
+
+                <div class="code-box">
+                    <div class="code-header">
+                        <div class="mac-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <span class="file-name">process.py</span>
+                    </div>
+                    <div class="code-content-area">
+                        <code id="content-code"># الكود سيظهر هنا</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- واجهة المختبر التفاعلي -->
+            <div id="lab-container" class="lab-body" style="display: none;">
+                <div class="operation-card">
+                    <div class="operation-header">
+                        <span class="operation-title">نوع العملية</span>
+                        <div class="operation-actions">
+                            <button id="btnSave" class="action-btn">📥 حفظ الصورة</button>
+                            <button id="btnReset" class="action-btn reset-btn">🔄 إعادة تعيين</button>
+                        </div>
+                    </div>
+                    <select id="operationSelect" class="operation-select"></select>
+                </div>
+
+                <div class="lab-layout">
+                    <div class="code-box" style="flex: 1; min-width: 300px;">
+                        <div class="code-header">
+                            <div class="mac-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <span class="file-name">process.py</span>
+                        </div>
+                        <div class="code-content-area">
+                            <code id="lab-code-display"></code>
+                        </div>
+                    </div>
+
+                    <div class="playground">
+                        <div class="upload-area" id="uploadBox">
+                            <input type="file" id="imageLoader" accept="image/*" hidden>
+                            <p>📷 اسحب صورة هنا أو انقر للتحميل لتجربة الكود</p>
+                        </div>
+                        <div class="images-display">
+                            <div class="image-box">
+                                <h4>الأصلية</h4>
+                                <canvas id="canvasOriginal"></canvas>
+                            </div>
+                            <div class="image-box">
+                                <h4>المعالجة</h4>
+                                <canvas id="canvasProcessed"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ربط كود البرمجة الخارجي -->
+    <!-- ... (نفس الكود السابق مع تغيير السكريبتات) -->
+    <script src="js/data_lec1.js"></script>
+    <script src="js/data_lec2.js"></script>
+    <script src="js/data_lec3.js"></script>
+    <script src="js/data_lec4.js"></script>
+    <script src="js/app.js"></script>
+
+    
+
+    <!--<script src="app.js"></script>-->
+</body>
+
+</html>

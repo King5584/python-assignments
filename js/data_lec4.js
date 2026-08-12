@@ -14,99 +14,181 @@ const lecture4 = {
         description: "تغطي هذه المحاضرة تقنيات الترشيح المكاني (Spatial Filtering) لتنعيم الصور وإزالة الضوضاء (Noise Reduction). تشتمل على الفلاتر الخطية مثل مرشح المتوسط (Mean Filter) باستخدام cv.blur ومرشح جاوس (Gaussian Filter) باستخدام cv.GaussianBlur لمعالجة الضوضاء العامة، والفلاتر غير الخطية مثل مرشح الوسيط (Median Filter) باستخدام cv.medianBlur المتخصص في إزالة ضوضاء الملح والفلفل (Salt and Pepper Noise). كما تتناول كيفية بناء مصفوفات القناع المخصصة (Custom Kernels) وتطبيقها عبر cv.filter2D.",
         code: `import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
 import os
+import matplotlib.pyplot as plt
 
-path = "./images/noisysalterpepper.png"
+# Linear Filtering: Mean and Gaussian Filters on Spatial Domain
+path = "./src/images/noisysalterpepper.png"
+
+# التحقق من وجود ملف الصورة في المسار المحدد
+if not os.path.exists(path):
+    print(f"not Found {path}")
+    exit()
+else:
+    # قراءة الصورة
+    image = cv.imread(path)
+    
+    # Mean Filter: تطبيق فلتر المتوسط بحجم نواة (5x5)
+    # ملاحظة: أبعاد النواة يجب أن تكون أعداداً فردية
+    image_mean = cv.blur(image, (5, 5))
+    
+    # Gaussian Filter: تطبيق فلتر جاوس بحجم نواة (5x5) وانحراف معياري (sigma = 1)
+    image_gaussian = cv.GaussianBlur(image, (5, 5), 1)
+    
+    # عرض النتائج
+    plt.figure(figsize=(15, 5))
+    
+    # الصورة الأصلية
+    plt.subplot(1, 3, 1)
+    plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
+    plt.title('Original Image')
+    
+    # الصورة بعد تطبيق Mean Filter
+    plt.subplot(1, 3, 2)
+    plt.imshow(cv.cvtColor(image_mean, cv.COLOR_BGR2RGB))
+    plt.title('Mean Filtered Image')
+    
+    # الصورة بعد تطبيق Gaussian Filter
+    plt.subplot(1, 3, 3)
+    plt.imshow(cv.cvtColor(image_gaussian, cv.COLOR_BGR2RGB))
+    plt.title('Gaussian Filtered Image')
+    
+    plt.show()
+
+    import cv2 as cv
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+
+# Non-Linear Filtering: Median Filter on Spatial Domain
+path = "./src/images/noisysalterpepper.png"
 
 if not os.path.exists(path):
-    print(f"File not found: {path}")
+    print(f"not Found {path}")
+    exit()
 else:
     image = cv.imread(path)
     
-    # 1. الفلاتر الخطية (Linear Filtering)
-    image_mean = cv.blur(image, (5, 5))
-    image_gaussian = cv.GaussianBlur(image, (5, 5), 1)
-
-    # 2. الفلاتر غير الخطية (Non-Linear Filtering)
+    # Median Filter: ترتيب قيم البكسلات وأخذ القيمة الوسيطة
+    # الرقم 5 يمثل حجم النواة (5x5) ويجب أن يكون فردياً
     image_median = cv.medianBlur(image, 5)
-
-    # 3. الفلاتر المخصصة (Custom Linear Filtering)
-    ones_mask = np.ones((5, 5), np.float32) / 25
-    custom_mask = np.array([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, 1, 1]
-    ], dtype=np.float32) / 9
-
-    image_custom_3x3 = cv.filter2D(image, -1, custom_mask)
-    image_custom_5x5 = cv.filter2D(image, -1, ones_mask)
-
-    plt.figure(figsize=(15, 8))
     
-    plt.subplot(2, 3, 1)
+    plt.figure(figsize=(10, 5))
+    
+    # الصورة الأصلية
+    plt.subplot(1, 2, 1)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
-    plt.title('Original Noisy Image')
+    plt.title('Original Image')
     
-    plt.subplot(2, 3, 2)
-    plt.imshow(cv.cvtColor(image_mean, cv.COLOR_BGR2RGB))
-    plt.title('Mean Filtered')
-
-    plt.subplot(2, 3, 3)
-    plt.imshow(cv.cvtColor(image_gaussian, cv.COLOR_BGR2RGB))
-    plt.title('Gaussian Filtered')
-
-    plt.subplot(2, 3, 4)
+    # الصورة بعد تطبيق Median Filter
+    plt.subplot(1, 2, 2)
     plt.imshow(cv.cvtColor(image_median, cv.COLOR_BGR2RGB))
-    plt.title('Median Filtered')
+    plt.title('Median Filtered Image')
+    
+    plt.show()
 
-    plt.subplot(2, 3, 5)
-    plt.imshow(cv.cvtColor(image_custom_3x3, cv.COLOR_BGR2RGB))
-    plt.title('Custom 3x3 Filter')
+    import cv2 as cv
+import numpy as np
+import os
+import matplotlib.pyplot as plt
 
-    plt.subplot(2, 3, 6)
-    plt.imshow(cv.cvtColor(image_custom_5x5, cv.COLOR_BGR2RGB))
-    plt.title('Custom 5x5 Filter')
+# Custom Linear Filtering using filter2D
+path = "./src/images/noisysalterpepper.png"
 
-    plt.tight_layout()
-    plt.show()`
+if not os.path.exists(path):
+    print(f"not Found {path}")
+    exit()
+else:
+    image = cv.imread(path)
+    
+    # إنشاء مصفوفة أسطر وأعمدة تحتوي على 1 مقسومة على عدد العناصر لتطابق المجموع 1
+    # النواة الأولى: بحجم (5x5)
+    ones_mask = np.ones((5, 5), np.float32) / 25
+    
+    # النواة الثانية: بحجم (3x3)
+    mask = np.array([[1, 1, 1],
+                     [1, 1, 1],
+                     [1, 1, 1]], np.float32) / 9
+    
+    # تطبيق الفلتر المخصص باستخدام cv.filter2D
+    # Paramenter -1 يعني احتفاظ الصورة المعالجة بنفس عمق/نوع بيانات الصورة الأصلية
+    image_filter2d = cv.filter2D(image, -1, mask)
+    image_filter2d_ones = cv.filter2D(image, -1, ones_mask)
+    
+    plt.figure(figsize=(15, 5))
+    
+    plt.subplot(1, 3, 1)
+    plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
+    plt.title('Original Image')
+    
+    plt.subplot(1, 3, 2)
+    plt.imshow(cv.cvtColor(image_filter2d, cv.COLOR_BGR2RGB))
+    plt.title('Filtered Image (3x3 Kernel)')
+    
+    plt.subplot(1, 3, 3)
+    plt.imshow(cv.cvtColor(image_filter2d_ones, cv.COLOR_BGR2RGB))
+    plt.title('Filtered Image (5x5 Kernel)')
+    
+    plt.show()
+
+
+    `
     },
     assignment: {
         title: "التكاليف المطلوبة للمحاضرة الرابعة",
         description: "1. اختيار 5 صور مختلفة وتطبيق تقنيات تحسين الصور وإزالة الضوضاء عليها بواسطة الفلاتر المكانية (Mean, Gaussian, Median).\n2. إجراء بحث مفصل مقارن بين أنواع الفلاتر الخطية (Linear) وغير الخطية (Non-Linear) مع بيان استخدامات كل منها.",
         code: `import cv2 as cv
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 
-image_path = 'images/noisysalterpepper.png'
-image = cv.imread(image_path)
+# قائمة بالمسارات لخمس صور مختلفة
+image_paths = [
+    "./images/img1.png",
+    "./images/img2.png",
+    "./images/img3.png",
+    "./images/img4.png",
+    "./images/img5.png"
+]
 
-if image is not None:
-    mean_blur = cv.blur(image, (5, 5))
-    gaussian_blur = cv.GaussianBlur(image, (5, 5), 0)
-    median_blur = cv.medianBlur(image, 5)
+# تعريف فلتر حدة مخصص (Sharpening Mask) كنوع إضافي من التحسين
+sharpen_kernel = np.array([[ 0, -1,  0],
+                           [-1,  5, -1],
+                           [ 0, -1,  0]], dtype=np.float32)
 
-    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+for i, img_path in enumerate(image_paths):
+    if not os.path.exists(img_path):
+        print(f"الصورة {img_path} غير موجودة.")
+        continue
     
-    axes[0, 0].imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
-    axes[0, 0].set_title('Original Noisy Image')
+    image = cv.imread(img_path)
     
-    axes[0, 1].imshow(cv.cvtColor(mean_blur, cv.COLOR_BGR2RGB))
-    axes[0, 1].set_title('Mean Filter (Linear)')
-
-    axes[1, 0].imshow(cv.cvtColor(gaussian_blur, cv.COLOR_BGR2RGB))
-    axes[1, 0].set_title('Gaussian Filter (Linear)')
-
-    axes[1, 1].imshow(cv.cvtColor(median_blur, cv.COLOR_BGR2RGB))
-    axes[1, 1].set_title('Median Filter (Non-Linear)')
-
-    for ax in axes.ravel():
-        ax.axis('off')
-
+    # 1. فلتر المتوسط (Mean Filter)
+    img_mean = cv.blur(image, (5, 5))
+    
+    # 2. فلتر جاوس (Gaussian Filter)
+    img_gaussian = cv.GaussianBlur(image, (5, 5), 0)
+    
+    # 3. فلتر الوسيط (Median Filter)
+    img_median = cv.medianBlur(image, 5)
+    
+    # 4. فلتر التنعيم/التحديد المخصص (Sharpening Filter)
+    img_sharp = cv.filter2D(image, -1, sharpen_kernel)
+    
+    # عرض النتائج لكل صورة
+    plt.figure(figsize=(18, 4))
+    
+    images_list = [image, img_mean, img_gaussian, img_median, img_sharp]
+    titles_list = ['Original', 'Mean Blur', 'Gaussian Blur', 'Median Filter', 'Sharpened']
+    
+    for idx in range(5):
+        plt.subplot(1, 5, idx + 1)
+        plt.imshow(cv.cvtColor(images_list[idx], cv.COLOR_BGR2RGB))
+        plt.title(f"Img {i+1}: {titles_list[idx]}")
+        plt.axis('off')
+        
     plt.tight_layout()
-    plt.show()
-else:
-    print("Could not read the image.")`
+    plt.show()`
     },
     snippets: {
         mean_filter: `image_mean = cv.blur(image, (5, 5))`,
